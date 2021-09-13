@@ -1,0 +1,17 @@
+{
+  "name": "event-redis-lock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.987.0",
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.2",
+    "uuid": "^8.3.2"
+  }
+}

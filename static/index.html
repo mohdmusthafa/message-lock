@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message App</title>
+</head>
+<body>
+    <div class="container">
+        <form method="POST" id="add-form">
+            <h1>Add to queue</h1>
+            <input type="text" name="message" id="message" placeholder="Message">
+            <input type="number" name="sleep-time" id="sleep-time" placeholder="Sleep time">
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <table border="1" id='data-table'>
+        
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js" integrity="sha512-lTLt+W7MrmDfKam+r3D2LURu0F47a3QaW5nF0c6Hl0JDZ57ruei+ovbg7BrZ+0bjVJ5YgzsAWE+RreERbpPE1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ejs@2.0.7/ejs.js"></script>
+    <script>
+        const getTable = async () => {
+            const response = await axios.get('/queue-items');
+            let html = ejs.render(`
+                    <tr>
+                        <th>ID</th>
+                        <th>Message</th>
+                        <th>Sleep Time</th>
+                        <th>Status</th>
+                    </tr>
+                <% for(let i=0; i<items.length; i++){ %>
+                    
+                    <tr>
+                        <td><%= items[i].message_id %></td>
+                        <td><%= items[i].message %></td>
+                        <td><%= items[i].sleep_time %></td>
+                        <td><%= items[i].status %></td>
+                    </tr>
+                <% } %>
+            `, { items: response.data });
+            document.getElementById("data-table").innerHTML = html;
+        }
+        setInterval(() => {
+            getTable()
+        }, 2000)
+
+        document.getElementById("add-form").addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = document.getElementById("message").value;
+            const sleep_time = document.getElementById("sleep-time").value;
+            await axios.post('/add-to-queue', { message, "sleep-time": sleep_time });
+            getTable()
+        })
+    </script>
+</body>
+</html>
